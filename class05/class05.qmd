@@ -1,0 +1,302 @@
+---
+title: "Class 5: Data visualization"
+author: "Jaewon Kim (PID: A16675101)"
+format: pdf
+date: 1/23/24
+---
+
+# Graphic systems in R
+
+There are many graphic systems in R for making plots and figures. 
+
+We have already played a little with **"base R"** graphics and the `plot()` function.
+
+Today we will start learning about a popular graphics package called `ggplot2()`.
+
+This is an add on package - i.e. we need to install it. I install it (like I install any package) with the `install.packages()` function.
+
+Before I can use the functions from a package I have to load up the package from my "library". We use `library(ggplot2)` command to load it up.
+```{r}
+library(ggplot2)
+ggplot(cars)
+```
+
+Every ggplot is made up of at least 3 things:
+- data (the numbers etc. that will go into your plot)
+- aes (how the columns of data map to the plot aesthetics)
+geoms (how the plot actually looks, points, bars, lines, etc.)
+
+```{r}
+ggplot(cars) + 
+  aes(x=speed, y=dist) + geom_point()
+```
+
+For simple plots ggplot is more verbose - it takes more code - than base R plot.
+
+```{r}
+ggplot(cars) + 
+  aes(x=speed, y=dist) + geom_point() + geom_line()
+```
+
+```{r}
+ggplot(cars) + 
+  aes(x=speed, y=dist) +
+  geom_point() +
+  labs(title="Speed and Stopping Distances of Cars",
+       x="Speed (MPH)", y="Stopping Distance (ft)",
+       subtitle = "Your informative subtitle text here",
+       caption="Dataset: 'cars'") +
+  geom_smooth(method="lm", se=FALSE) +
+  theme_bw()
+```
+
+Adding more plot aes through aes()
+
+```{r}
+url <- "https://bioboot.github.io/bimm143_S20/class-material/up_down_expression.txt"
+genes <- read.delim(url)
+head(genes)
+```
+
+Q. Use the nrow() function to find out how many genes are in this dataset. What is your answer?
+
+```{r}
+nrow(genes)
+```
+
+Q. How many columns did you find?
+
+```{r}
+colnames(genes)
+ncol(genes)
+```
+
+Q. Use the table() function on the State column of this data.frame to find out how many ‘up’ regulated genes there are. What is your answer? 
+
+```{r}
+table(genes$Stater)
+```
+
+Q. Using your values above and 2 significant figures. What fraction of total genes is up-regulated in this dataset?
+
+```{r}
+round(table(genes$State)/nrow(genes), 3)
+```
+
+Q. Complete the code below to produce the following plot. There is extra information in this dataset, namely the State column, which tells us whether the difference in expression values between conditions is statistically significant.
+
+```{r}
+p <- ggplot(genes) + aes(x = Condition1, y = Condition2, col = State) +
+  geom_point() 
+
+p
+```
+
+Q. I am not a big fan of these default colors so let’s change them up by adding another layer to explicitly specifcy our color scale.
+
+```{r}
+p2 <- p +
+  scale_colour_manual(values = c("blue","grey","red")) 
+p2
+```
+Q. Nice, now add some plot annotations to the p object with the labs() function so your plot looks like the following:
+```{r}
+p <- p + scale_colour_manual(values = c("blue","grey","red")) +
+  labs(title = "Gene Expression Changes Upon Drug Treatment", x = "Control (no drug)", y = "Druge Treatment")
+
+p
+```
+
+Going further
+
+Q. Install gapminder and filter 2007 data
+```{r}
+#install.packages("gapminder")
+library(gapminder)
+
+#install.packages("dplyr")
+library(dplyr)
+
+gapminder_2007 <- gapminder %>% filter(year == 2007)
+```
+
+Q. Complete the code below to produce a first basic scater plot of this gapminder_2007 dataset. Make points slightly transparent
+
+```{r}
+ggplot(gapminder_2007) +
+  aes(x = gdpPercap, y = lifeExp) +
+  geom_point(alpha = 0.5)
+```
+
+Q. Add size and continent aes
+
+```{r}
+ggplot(gapminder_2007) +
+  aes(x = gdpPercap, y = lifeExp, color = continent, size = pop) +
+  geom_point(alpha = 0.5)
+```
+
+Q. coloring scheme based on the categorical data type of the variable continent.
+
+```{r}
+ggplot(gapminder_2007) + 
+  aes(x = gdpPercap, y = lifeExp, color = pop) +
+  geom_point(alpha=0.8)
+```
+
+Q. For the gapminder_2007 dataset we can plot the GDP per capita (x=gdpPercap) vs. the life expectancy (y=lifeExp) and set the point size based on the population (size=pop) of each country we can use:
+
+```{r}
+ggplot(gapminder_2007) + 
+  aes(x = gdpPercap, y = lifeExp, size = pop) +
+  geom_point(alpha=0.5)
+```
+
+Q. To reflect the actual population differences by the point size we can use the scale_size_area() function instead.
+
+```{r}
+ggplot(gapminder_2007) + 
+  geom_point(aes(x = gdpPercap, y = lifeExp,
+                 size = pop), alpha = 0.5) + 
+  scale_size_area(max_size = 10)
+```
+
+Q. Can you adapt the code you have learned thus far to reproduce our gapminder scatter plot for the year 1957? What do you notice about this plot is it easy to compare with the one for 2007?
+
+```{r}
+gapminder_1957 <- gapminder %>% filter(year == 1957)
+ggplot(gapminder_1957) + 
+  aes(x = gdpPercap, y = lifeExp, color=continent,
+                 size = pop) +
+  geom_point(alpha = 0.7) + 
+  scale_size_area(max_size = 10) 
+```
+
+Q. Do the same steps above but include 1957 and 2007 in your input dataset for ggplot(). You should now include the layer facet_wrap(~year) to produce the following plot:
+
+```{r}
+gapminder_1957 <- gapminder %>% filter(year==1957|year == 2007)
+ggplot(gapminder_1957) + 
+  aes(x = gdpPercap, y = lifeExp, color=continent,
+                 size = pop) +
+  geom_point(alpha = 0.7) + 
+  scale_size_area(max_size = 15) +
+facet_wrap(~year)
+```
+
+Q. Create bar chart for the biggest countries by population in 2007
+
+```{r}
+gapminder_top5 <- gapminder %>% 
+  filter(year==2007) %>% 
+  arrange(desc(pop)) %>% 
+  top_n(5, pop)
+
+gapminder_top5
+
+ggplot(gapminder_top5) + geom_col(aes(x = country, y = pop))
+```
+
+Q. Create a bar chart showing the life expectancy of the five biggest countries by population in 2007.
+
+```{r}
+gapminder_top5exp <- gapminder %>% 
+  filter(year==2007) %>% 
+  arrange(desc(lifeExp)) %>% 
+  top_n(5, lifeExp)
+
+gapminder_top5
+
+ggplot(gapminder_top5exp) + geom_col(aes(x = country, y = lifeExp))
+```
+
+Q. Use color bars for each population.
+
+```{r}
+ggplot(gapminder_top5) + 
+  geom_col(aes(x = country, y = pop, fill = continent))
+```
+
+Q. Do the same but using life expectancy as filler
+
+```{r}
+ggplot(gapminder_top5) + 
+  geom_col(aes(x = country, y = pop, fill = lifeExp))
+```
+
+Q. Fill graph based on gdpPercap, change orders of bars, and fill by country.
+
+```{r}
+#Plot bargraph
+ggplot(gapminder_top5) + 
+  geom_col(aes(x = country, y = pop, fill = gdpPercap))
+
+#Reorder by population
+ggplot(gapminder_top5) + 
+  geom_col(aes(x = reorder(country, -pop), y = pop, fill = gdpPercap))
+
+#Fill by country
+ggplot(gapminder_top5) +
+  aes(x = reorder(country, -pop), y = pop, fill = country) +
+  geom_col(col = "gray30") +
+  guides(fill = "none")
+```
+
+Q. Flip the bars
+
+```{r}
+#Look at structure of USArrests
+head(USArrests)
+
+#Create flipped bar chart
+USArrests$States <- rownames(USArrests)
+Murderplot <- ggplot(USArrests, aes(x = reorder(States, Murder), y = Murder)) + geom_col() + coord_flip()
+```
+
+Q. Combine geom_point() and geom_segment()
+
+```{r}
+Murderplot + 
+  geom_point() +
+  geom_segment(aes(x = States, xend = States,
+                   y = 0, yend = Murder), color = "blue")
+```
+
+Q. Extension - Animation
+```{r}
+# Install install.packages("gifski")
+# Install install.packages("gganimate")
+
+library(gapminder)
+library(gganimate)
+
+ggplot(gapminder, aes(gdpPercap, lifeExp, size = pop, colour = country)) +
+  geom_point(alpha = 0.7, show.legend = FALSE) +
+  scale_colour_manual(values = country_colors) +
+  scale_size(range = c(2, 12)) +
+  scale_x_log10() +
+  facet_wrap(~continent) +
+ labs(title = 'Year: {frame_time}', x = 'GDP per capita', y = 'life expectancy') +
+  transition_time(year) +
+  shadow_wake(wake_length = 0.1, alpha = FALSE)
+```
+
+Q. Combine plots
+```{r}
+#Install install.packages("patchwork")
+library(patchwork)
+
+#Create some plots
+p1 <- ggplot(mtcars) + geom_point(aes(mpg, disp))
+p2 <- ggplot(mtcars) + geom_boxplot(aes(gear, disp, group = gear))
+p3 <- ggplot(mtcars) + geom_smooth(aes(disp, qsec))
+p4 <- ggplot(mtcars) + geom_bar(aes(carb))
+
+#Combine them
+(p1 | p2 | p3) / p4 
+```
+
+Q. Report setup of document
+```{r}
+sessionInfo()
+```
