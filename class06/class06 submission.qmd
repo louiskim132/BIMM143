@@ -1,0 +1,114 @@
+---
+title: "class06 submission"
+author: "Jaewon Kim"
+format: pdf
+date: 1/25/24
+---
+
+Q1. Write a function grade() to determine an overall grade from a vector of student homework assignment scores dropping the lowest single score. If a student misses a homework (i.e. has an NA valu1e) this can be used as a score to be potentially dropped. Your final function should be adquately explained with code comments and be able to work on an example class gradebook such as this one in CSV format: “<https://tinyurl.com/gradeinput”>
+
+```{r}
+
+#Final answer
+
+#Function grade() 
+grade <- function(x) {                  #take student vector x as input
+  x[is.na(x)] <- 0                      #part e)
+  mean(x[-which.min(x)])                #part d)
+}
+
+#Now read the online gradebook (csv file)
+url <- "https://tinyurl.com/gradeinput"
+gradebook <- read.csv(url, row.names = 1)
+head(gradebook)
+
+#Apply function to gradebook
+results <- apply(gradebook, 1, grade)
+results
+```
+
+
+WORK BELOW----------------------------------
+
+
+```{r}
+#Example input vectors to start with
+
+student1 <- c(100, 100, 100, 100, 100, 100, 100, 90)
+student2 <- c(100, NA, 90, 90, 90, 90, 97, 80)
+student3 <- c(90, NA, NA, NA, NA, NA, NA, NA)
+
+student1 #Check student's entire grade
+
+which.min(student1) # a) Print index of lowest grade of student's grade
+
+student1[which.min(student1)] #b) Print score of corresponding index
+
+student1[-which.min(student1)] #c) Remove lowest score from vector
+
+mean(student1[-which.min(student1)]) #d) Average grade after dropping score
+
+student2[is.na(student2)] <-0 #e) Assign NA as zero. For instance, student 2
+student2
+
+grade <- function(x) { #Call the function grade, x as input student vector
+  x[is.na(x)] <- 0 #part e)
+  mean(x[-which.min(x)]) #part d)
+}
+
+grade(student1) #Test the function
+grade(student2)
+grade(student3)
+
+url <- "https://tinyurl.com/gradeinput" #read the online gradebook (csv file)
+gradebook <- read.csv(url, row.names = 1)
+head(gradebook)
+
+results <- apply(gradebook, 1, grade) #Apply function to gradebook
+results
+```
+
+
+
+Q2. Using your grade() function and the supplied gradebook, Who is the top scoring student overall in the gradebook?
+
+student 18 has highest overall grade.
+```{r}
+which.max(results) #Find maximum in gradebook
+```
+
+
+
+Q3. From your analysis of the gradebook, which homework was toughest on students (i.e. obtained the lowest scores overall?)
+
+Homework 2 was most difficult for students.
+```{r}
+which.min(apply(gradebook, 2, sum, na.rm=T)) #Add scores of all students
+
+difficulty <- apply(gradebook, 2, grade) #Evaulate difficulty by total scores
+difficulty
+
+which.min(difficulty) #Find lowest total score
+```
+
+
+
+Q4. Optional Extension: From your analysis of the gradebook, which homework was most predictive of overall score (i.e. highest correlation with average grade score)?
+
+Homework 5 showed highest correlation coifficient of 0.633, compared to average grade of each assignments. Therefore, homework 5 is most predictive of overall score.
+```{r}
+masked <- gradebook
+masked[is.na(masked)] <- 0 #make all NA to zero
+
+cor(masked$hw1, results) #find correaltion between hw1 and other Homeworks.
+cor(masked$hw2, results)
+cor(masked$hw3, results) 
+cor(masked$hw4, results)
+cor(masked$hw5, results)
+
+apply(masked, 2, cor, results) #apply cor using resultand masked's col.
+```
+
+Q5. Make sure you save your Quarto document and can click the “Render” (or Rmarkdown”Knit”) button to generate a PDF foramt report without errors. Finally, submit your PDF to gradescope.
+
+Yes.

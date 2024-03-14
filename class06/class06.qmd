@@ -1,0 +1,226 @@
+---
+title: "class06: R Functions"
+author: "Jaewon Kim (PID: A16675101)"
+date: 1/25/24
+format: html
+---
+
+## R Functions
+
+Functions are how we get stuff done. We call functions to do everything useful in R.
+
+One cool thing about R is that it makes writing your own functions comparatively easy. 
+
+All functions in R have at least three things:
+
+- A name (we get to pick this) 
+- One or more input arguments (the input to our funtion)
+- The body (lines of code that do the work)
+*Need line space to list with dots.
+
+```{r}
+5 + 10 #considered as code
+# makes line comment, where 5 + 10 isn't calculated.
+#How not to type # every line? 
+
+#| eval: FALSE
+
+funname <- function(input1, input2) {
+  #The body with R code
+}
+```
+
+Let's write a silly first function to add two numbers:
+
+```{r}
+x <- 5
+y <- 1
+x+y 
+```
+
+```{r define addme}
+addme <- function(x, y=1){
+  x + y
+}
+#Don't forget to run this chunk frist to register addme into enviornment.
+```
+
+```{r}
+addme(100,100)
+# addme(100) gives missing default error. Define it in function proposal. 
+#Set y=1 in function (x,y)
+
+addme(10)
+```
+
+##Lab for today
+
+Write a function grade() to determine an overall grade from a vector of student homework assignment scores dropping the lowerst single assignment score.
+
+```{r}
+# Example input vectors to start with
+student1 <- c(100, 100, 100, 100, 100, 100, 100, 90)
+student2 <- c(100, NA, 90, 90, 90, 90, 97, 80)
+student3 <- c(90, NA, NA, NA, NA, NA, NA, NA)
+```
+
+Q1. Write a function grade() to determine an overall grade from a vector of student homework assignment scores dropping the lowest single score. If a student misses a homework (i.e. has an NA value) this can be used as a score to be potentially dropped. Your final function should be adquately explained with code comments and be able to work on an example class gradebook such as this one in CSV format: “https://tinyurl.com/gradeinput” [3pts]
+
+My work--------------------------
+```{r}
+#Check student's entire grade
+student1
+
+#Print index of lowest grade of student's grade
+which.min(student1)
+
+#Print score of corresponding index
+student1[which.min(student1)]
+
+#Remove lowest score from vector
+student1[-which.min(student1)]
+
+#Calcaulte average grade after dropping lowest score
+mean(student1[-which.min(student1)])
+
+#For NA, assign NA as zero. For instance, student 2
+student2
+student2[is.na(student2)] <-0
+student2
+
+#Call the function
+grade <- function(x) {
+  x[is.na(x)] <- 0
+  mean(x[-which.min(x)])
+}
+
+#Test the function
+grade(student1)
+grade(student2)
+grade(student3)
+
+#Setup gradebook
+url <- "https://tinyurl.com/gradeinput"
+gradebook <- read.csv(url, row.names = 1)
+
+#After this, identical to professor's work.
+
+```
+Professor's work---------------------------------
+```{r}
+#Find average
+mean(student1)
+mean(student2, na.rm = TRUE)
+mean(student3, na.rm = TRUE)
+
+#However, this isn't helpful because index itself shouldn't be completely removed for average calculation. 
+
+#Let's start from student1. We want to find the minimum score
+min(student1) 
+#This returns min value, but doesn't tell which is min
+
+which.min(student1) 
+#Returns which index is minimum, 8th in this case. Then, how to remove this?
+
+student1[-which.min(student1)]
+
+#Now put these bits of knowledge together to make some code that identifies and drops the lowerst score and then calculate the mean
+
+
+ind <- which.min (student1) #Find the lowest score
+mean (student1[-ind]) #Remove lowest score and find the mean
+
+#Use a common shortcut and use 'x' as my input
+x <- student1
+mean(x[-which.min(x)])
+
+#How to deal with NA? 
+# 1) replace NA values with zero
+y <- 1:5
+y[y==3] <- 10000
+y
+
+#But NA is empty, can't use code above
+y <- c(1, 2, NA, 4, 5)
+y == NA
+
+# I don't want to change everything to NA. Use is.na to filter NA 
+y <- c(1, 2, NA, 4, 5)
+is.na(y)
+
+#How can I remove the elements from the vector?
+# ! can flip booleans
+!c(F,F,F)
+
+y[is.na(y)] <- 10000
+y
+
+#Combine to calculate average but caring NA
+
+x <- student1
+
+#Change NA values to zero
+x[is.na(x)] <- 0
+#Find and remove min vlaue and get mean
+mean(x[-which.min(x)])
+
+#Last step is to change snipet into grade() function.
+grade <- function(x){
+  #Change NA values to zero
+     x[is.na(x)] <- 0
+  #Find and remove min vlaue and get mean
+     mean(x[-which.min(x)])
+}
+grade(student1)
+grade(student2)
+grade(student3)
+
+#Now read the online gradebook (csv file)
+url <- "https://tinyurl.com/gradeinput"
+gradebook <- read.csv(url, row.names = 1)
+head(gradebook)
+
+results <- apply(gradebook, 1, grade)
+results
+```
+
+Q.2 Using your grade() function and the supplied gradebook, Who is the top scoring student overall in the gradebook?
+
+```{r}
+which.max(results)
+
+```
+
+Q3. From your analysis of the gradebook, which homework was toughest on students (i.e. obtained the lowest scores overall?)
+
+```{r}
+
+which.min(apply(gradebook, 2, mean, na.rm=T)) # dropping NA scores.
+which.min(apply(gradebook, 2, sum, na.rm=T))
+
+difficulty <- apply(gradebook, 2, grade)
+difficulty
+
+which.min(difficulty)
+```
+
+4. Optional Extension: From your analysis of the gradebook, which homework was most predictive of overall score (i.e. highest correlation with average grade score)?
+
+```{r}
+#make all NA to zero
+mask <- gradebook
+mask[is.na(mask)] <- 0
+```
+
+We can use the 'cor' function for correlation analysis.
+
+```{r}
+cor(mask$hw1, results)
+cor(mask$hw3, results)
+cor(mask$hw5, results)
+
+apply(mask, 2, cor, results)
+```
+
+
+```
