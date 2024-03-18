@@ -1,0 +1,299 @@
+---
+title: "class13"
+format: pdf
+---
+
+First, install packages
+
+install.packages(“BiocManager”) BiocManager::install() BiocManager::install(“DESeq2”)
+
+In today’s class we will explore and analyze data from a published RNA-seq experiment where airway smooth muscle cells were treated with dexamethasone, a synthetic glucocorticoid steroid with anti-inflammatory effects (Himes et al. 2014).
+
+##Data Import We have two input files, so-called “count data” and “coldata”
+```{r}
+counts <- read.csv("airway_scaledcounts.csv", row.names=1)
+metadata <-  read.csv("airway_metadata.csv")
+head(counts)
+
+head(metadata)
+```
+
+Q1. How many genes are in this dataset?
+```{r}
+nrow(counts)
+```
+There are 38694 genes in the dataset.
+
+
+Q2. How many ‘control’ cell lines do we have?
+```{r}
+table(metadata$dex)
+```
+There are 4 control cells in the dataset.
+
+
+# differential gene expression
+Time to do some analysis. We have 4 control and 4 treated samples/experiments/columns. Make sure the metadata id column matches the columns in our countdata.
+```{r}
+colnames(counts) == metadata$id
+colnames(counts)
+
+metadata$id
+```
+
+To check that all elements of a vector are TRUE we can use the all() function.
+```{r}
+all(c(T,T,T,T))
+all(c(T,T,T,F))
+```
+
+```{r}
+all(colnames(counts) == metadata$id)
+```
+
+To start I will calculate the ‘control.mean’ and ‘treated.mean’ vlaues and compare them.
+
+- Identify and extract the ‘control’ only columns
+- determine the mean value for each gene (i.e. row)
+- Do the same for ‘treated’
+```{r}
+control <- metadata[metadata$dex == "control", ]
+control.counts <- counts[ , control$id]
+control.mean <- apply(control.counts, 1, mean)
+head(control.mean)
+```
+
+Q3. How would you make the above code in either approach more robust? Is there a function that could help here? 
+
+The issue with given code in the website is that mean is calculated by dividing rowSUms with 4. This method cause issue when there are more than 4 types of cell lines in the dataset. To ensure that all number of cell lines are included, we can use apply function instead of doing “/4” as shown in code above.
+
+
+Q4. Follow the same procedure for the treated samples (i.e. calculate the mean per gene across drug treated samples and assign to a labeled vector called treated.mean)
+```{r}
+treated <- metadata[metadata$dex == "treated", ]
+treated.counts <- counts[ , treated$id]
+treated.mean <- apply(treated.counts, 1, mean)
+head(treated.mean)
+```
+
+Let’s store these togehter for ease of book-keeping
+```{r}
+meancounts <- data.frame(control.mean, treated.mean)
+```
+
+have a quick view of this data:
+
+Q5 (a). Create a scatter plot showing the mean of the treated samples against the mean of the control samples. Your plot should look something like the following.
+```{r}
+plot(meancounts)
+```
+
+
+Q5 (b).You could also use the ggplot2 package to make this figure producing the plot below. What geom_?() function would you use for this plot?
+```{r}
+library(ggplot2)
+
+ggplot(meancounts) +
+  aes(x = control.mean, y = treated.mean) +
+  geom_point(alpha = 0.3)
+```
+
+
+This data is screaming at us to log transform as it is so heavely skewed and over such a wide range
+
+Q6. Try plotting both axes on a log scale. What is the argument to plot() that allows you to do this?
+```{r}
+plot(meancounts, log = "xy")
+```
+
+
+I want to compare the treated and the control values here and we will use fold change in log2 units to do this. log2(treated/control)
+```{r}
+log2(20/20) #no difference
+log2(20/10) #doubling in the treated
+log2(5/10) #half in the treated
+```
+
+```{r}
+log2fc <- log2(meancounts$treated.mean/meancounts$control.mean)
+meancounts$log2fc <- log2fc
+```
+
+A common rule of thumb cut-off for calling a gene “differentially expressed” is a log2 fold change value of either > +2 or <-2 for “up regulated” and “down regulated” respectively.
+```{r}
+head(meancounts)
+```
+
+```{r}
+sum(meancounts$log2fc > 2, na.rm = TRUE)
+sum(meancounts$log2fc < -2, na.rm = TRUE)
+```
+
+We first need to remove zero count genes - as we can’t say anything about these genes anyway and their division of log values are messing things up (divide by zero) or the -inf log problem
+```{r}
+to.rm.ind <- rowSums(meancounts[ ,1:2]==0) > 0
+mycounts <- meancounts[!to.rm.ind, ]
+```
+
+Q7. What is the purpose of the arr.ind argument in the which() function call above? Why would we then take the first column of the output and need to call the unique() function?
+
+While meancounts[ ,1:2]==0 filters control.mean and treated.mean with value of zero, it returns boolean. arr.ind = TRUE return row and column index where TRUE value is, indicating where the gene with zero value locates. Hence, arr.ind makes easier to summurize genes with zero values as we don’t have to look for TRUE throughout entire dataframe.
+
+Q. How many genes do we have left that we can say something about (i.e. they don’t have any zero counts)
+```{r}
+nrow(mycounts)
+```
+
+```{r}
+up.ind <- mycounts$log2fc > 2
+down.ind <- mycounts$log2fc < -2
+sum(up.ind)
+sum(down.ind)
+```
+
+Q8. Using the up.ind vector above can you determine how many up regulated genes we have at the greater than 2 fc level? 
+
+There are 250 upregulated genes
+
+
+Q9. Using the down.ind vector above can you determine how many down regulated genes we have at the greater than 2 fc level? 
+
+There are 367 downregulated gene
+
+
+Q10. Do you trust these results? Why or why not? 
+
+No. Fold change itself doesn’t indicate statistically significant difference. To determine that genes expression difference is actually significant, we need to evaluate p-values.
+
+#DESeq analysis Let’s do this properly with the help of the DESeq2 package
+```{r}
+#|message: FALSE
+library(DESeq2)
+```
+
+We have to use a specific data object for working with DESeq
+```{r}
+dds <- DESeqDataSetFromMatrix(countData = counts, colData = metadata, design = ~dex)
+```
+
+Run our main analysis with the ‘DESeq()’ function
+```{r}
+dds <- DESeq(dds)
+```
+
+To get the results out of our ‘dds’ object we can use DESeq function called ‘results()’
+```{r}
+res <- results(dds)
+head(res)
+summary(res)
+
+res05 <- results(dds, alpha = 0.5)
+summary(res05)
+```
+
+
+```{r}
+vsd <- vst(dds, blind = FALSE)
+plotPCA(vsd, intgroup = c("dex"))
+```
+
+```{r}
+pcaData <- plotPCA(vsd, intgroup=c("dex"), returnData=TRUE)
+head(pcaData)
+```
+
+```{r}
+# Calculate percent variance per PC for the plot axis labels
+percentVar <- round(100 * attr(pcaData, "percentVar"))
+
+ggplot(pcaData) +
+  aes(x = PC1, y = PC2, color = dex) +
+  geom_point(size =3) +
+  xlab(paste0("PC1: ", percentVar[1], "% variance")) +
+  ylab(paste0("PC2: ", percentVar[2], "% variance")) +
+  coord_fixed() +
+  theme_bw()
+```
+
+
+```{r}
+#BiocManager::install("AnnotationDbi")
+#BiocManager::install("org.Hs.eg.db")
+library("AnnotationDbi")
+library("org.Hs.eg.db")
+
+columns(org.Hs.eg.db)
+res
+```
+
+```{r}
+res$symbol <- mapIds(org.Hs.eg.db,
+                     keys=row.names(res),      # Gene name
+                     keytype="ENSEMBL",        # Format of gene name
+                     column="SYMBOL",          # New format to add
+                     multiVals="first")
+```
+
+
+Q11. Run the mapIds() function two more times to add the Entrez ID and UniProt accession and GENENAME as new columns called res$entrez, res$uniprot, and res$genename.
+```{r}
+#res$entrez
+res$entrez <- mapIds(org.Hs.eg.db,
+                     keys=row.names(res),      
+                     keytype="ENSEMBL",        
+                     column="ENTREZID",          
+                     multiVals="first")
+
+#res$uniport
+res$uniport <- mapIds(org.Hs.eg.db,
+                     keys=row.names(res),      
+                     keytype="ENSEMBL",        
+                     column="UNIPROT",          
+                     multiVals="first")
+
+#res$genename
+res$genename <- mapIds(org.Hs.eg.db,
+                     keys=row.names(res),      
+                     keytype="ENSEMBL",        
+                     column="GENENAME",          
+                     multiVals="first")
+
+head(res)
+```
+
+```{r}
+ord <- order(res$padj)
+#View(res[ord,])
+head(res[ord,])
+```
+
+```{r}
+write.csv(res[ord,], "deseq_results.csv")
+```
+Adjusted p value ensure low false positive. While 5% is widely used, 5% of 25000 is hella lots of inaccuracy.
+
+
+# Volcano Plot
+A very common and useful summary results figure from this type of analysis is called a volcano plot - a plot of log2FC vs p-value. We use the ‘padj’ the adjusted p-value for multiple testing.
+```{r}
+plot(res$log2FoldChange, res$padj)
+plot(res$log2FoldChange, res$padj, log = "y")
+plot(res$log2FoldChange, -log(res$padj))
+```
+
+Add some color and nice labels for this plot
+```{r}
+# Setup our custom point color vector 
+mycols <- rep("gray", nrow(res))
+mycols[ abs(res$log2FoldChange) > 2 ]  <- "red" 
+
+inds <- (res$padj < 0.01) & (abs(res$log2FoldChange) > 2 )
+mycols[ inds ] <- "blue"
+
+# Volcano plot with custom colors 
+plot( res$log2FoldChange,  -log(res$padj), col=mycols, ylab="-Log(P-value)", xlab="Log2(FoldChange)" )
+
+# Cut-off lines
+abline(v=c(-2,2), col="gray", lty=2)
+abline(h=-log(0.05), col="gray", lty=2)
+```
