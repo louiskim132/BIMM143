@@ -1,0 +1,8 @@
+#Calculate ages and add into the data frame
+subject$age <- subject %>% 
+  mutate(ages_yrs = time_length(today() - ymd(year_of_birth), "years"))
+
+#Find statistics of age for both vaccination group
+ap <- subject %>%
+  filter(infancy_vac == "aP") 
+
