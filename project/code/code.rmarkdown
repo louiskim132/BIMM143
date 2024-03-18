@@ -1,0 +1,65 @@
+---
+title: "code"
+author: "Jaewon Kim"
+format: html
+---
+
+
+- Read alignment file
+
+```{r}
+library(bio3d)
+
+#File name for aligned sequences
+align_path <- "C:/Users/louis/Downloads/bimm143/R code/project/code"
+fst_files <- list.files(path = align_path,
+                        pattern = "*.fst",
+                        full.name = TRUE)
+
+#Print alignment file name
+basename(fst_files)
+
+#Read fasta sequence file
+align <- read.fasta(fst_files, rm.dup = TRUE, to.upper = FALSE, to.dash=TRUE)
+```
+
+
+- Create heatmap
+
+```{r}
+library(pheatmap)
+
+identity <- seqidentity(align, normalize=TRUE, similarity=FALSE, ncore=1, nseg.scale=1)
+pheatmap(identity)
+```
+
+
+- Find a main protein structure
+
+```{r}
+#Find consensus sequence
+con <- consensus(align, cutoff = 0.9)
+con$seq 
+
+#Run BLAST
+blast.pdb(con$seq) 
+
+#Annotate BLAST result
+ids <- c("3S2C_A", "4ATW_A", "3UG3_A")
+pdb.annotate(ids, unique=TRUE)
+```
+
+
+- Visualize with VMD
+
+```{r}
+#trim chain A
+pdb.3S2C <- read.pdb("3s2c.pdb")
+chainA <- trim.pdb(pdb.3S2C, chain = "A")
+write.pdb(chainA, file = "chainA_3S2C")
+
+pdb.3S2C <- read.pdb("3s2c.pdb")
+chainA <- trim.pdb(pdb.3S2C, chain = "A")
+write.pdb(chainA, file = "chainA_3S2C")
+```
+

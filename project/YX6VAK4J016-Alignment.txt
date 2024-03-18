@@ -1,0 +1,413 @@
+RID: YX6VAK4J016	
+Job Title:DR731264.1_6 MGC7.2.1.1.1.H04.R.1 NIH_MGC_331...				
+Program: BLASTP 
+Query: DR731264.1_6 MGC7.2.1.1.1.H04.R.1 NIH_MGC_331 Homo sapiens cDNA clone MGC7.2.1.1.1.H04, mRNA sequence ID: lcl|Query_3110456(amino acid) Length: 80
+Database: nr All non-redundant GenBank CDS translations+PDB+SwissProt+PIR+PRF excluding environmental samples from WGS projects
+	
+Sequences producing significant alignments:
+                                                                  Scientific      Common                     Max    Total Query   E   Per.   Acc.                        
+Description                                                       Name            Name            Taxid      Score  Score cover Value Ident  Len        Accession        
+major intrinsically disordered NOTCH2-binding receptor 1-like...  Homo sapiens    human           9606       148    148   98%   5e-43 92.41  190        NP_001244237.1   
+major intrinsically disordered NOTCH2-binding receptor 1-like...  Pan paniscus    pygmy chimpa... 9597       147    147   98%   2e-42 91.14  190        XP_003829382.1   
+major intrinsically disordered NOTCH2-binding receptor 1-like...  Pan troglodytes chimpanzee      9598       147    147   98%   2e-42 91.14  190        XP_003950663.1   
+major intrinsically disordered NOTCH2-binding receptor 1-like...  Pongo abelii    Sumatran ora... 9601       146    146   98%   3e-42 91.14  190        XP_002815898.1   
+major intrinsically disordered NOTCH2-binding receptor 1-like...  Rhinopithecu... golden snub-... 61622      145    145   98%   5e-42 91.14  190        XP_010379869.2   
+major intrinsically disordered NOTCH2-binding receptor 1-like...  Gorilla gori... western lowl... 9595       145    145   98%   9e-42 89.87  190        XP_004042492.1   
+major intrinsically disordered NOTCH2-binding receptor 1-like...  Nomascus leu... northern whi... 61853      145    145   95%   1e-41 93.42  190        XP_004087485.1   
+major intrinsically disordered NOTCH2-binding receptor 1-like...  Piliocolobus... Ugandan red ... 591936     144    144   98%   2e-41 89.87  190        XP_023050104.1   
+major intrinsically disordered NOTCH2-binding receptor 1-like...  Trachypithec... Francois's l... 54180      144    144   98%   2e-41 89.87  190        XP_033037245.1   
+UPF0258 protein KIAA1024-like homolog isoform X2 [Macaca...       Macaca nemes... pig-tailed m... 9545       142    142   98%   6e-41 87.34  162        XP_024644098.1   
+UPF0258 protein KIAA1024-like homolog [Theropithecus gelada]      Theropithecu... gelada          9565       142    142   98%   9e-41 88.61  190        XP_025245224.1   
+major intrinsically disordered NOTCH2-binding receptor 1-like...  Chlorocebus ... green monkey    60711      142    142   98%   1e-40 88.61  190        XP_008012506.2   
+major intrinsically disordered NOTCH2-binding receptor 1-like...  Macaca mulatta  Rhesus monkey   9544       142    142   98%   1e-40 87.34  190        NP_001180990.1   
+major intrinsically disordered NOTCH2-binding receptor 1-like...  Symphalangus... siamang         9590       142    142   95%   1e-40 92.11  190        XP_055155262.1   
+UPF0258 protein KIAA1024-like homolog isoform X1 [Macaca...       Macaca nemes... pig-tailed m... 9545       142    142   98%   1e-40 87.34  190        XP_011715000.1   
+major intrinsically disordered NOTCH2-binding receptor 1-like...  Hylobates mo... silvery gibbon  81572      142    142   95%   2e-40 90.79  190        XP_032012416.1   
+major intrinsically disordered NOTCH2-binding receptor 1-like...  Sapajus apella  tufted capuchin 9515       139    139   98%   2e-39 86.08  190        XP_032117284.1   
+major intrinsically disordered NOTCH2-binding receptor 1-like...  Callithrix j... white-tufted... 9483       137    137   98%   9e-39 84.81  190        XP_002744678.1   
+major intrinsically disordered NOTCH2-binding receptor 1-like...  Cebus imitator  Panamanian w... 2715852    133    133   98%   4e-37 83.54  190        XP_017387650.1   
+
+Alignments:
+
+>major intrinsically disordered NOTCH2-binding receptor 1-like [Homo sapiens]
+Sequence ID: NP_001244237.1 Length: 190
+>RecName: Full=Major intrinsically disordered NOTCH2-binding receptor 1-like; AltName: Full=Major intrinsically disordered NOTCH2-associated receptor 2; AltName: Full=Membrane integral NOTCH2-associated receptor 2 [Homo sapiens]
+Sequence ID: P59773.2 Length: 190
+>hCG2036615 [Homo sapiens]
+Sequence ID: EAW62380.1 Length: 190
+>membrane integral NOTCH2 associated receptor 2 [Homo sapiens]
+Sequence ID: KAI2538698.1 Length: 190
+>membrane integral NOTCH2 associated receptor 2 [Homo sapiens]
+Sequence ID: KAI4022470.1 Length: 190 
+Range 1: 28 to 106
+
+Score:148 bits(374), Expect:5e-43, 
+Method:Compositional matrix adjust., 
+Identities:73/79(92%), Positives:74/79(93%), Gaps:0/79(0%)
+
+Query  1    SLSQASLVRFPGGNYPAA*HWQNLVYSQREKKNIAAQRIRFFSADSLVTADSPPPSMSSV  60
+            +L QASLVRFPGGNYPAA HWQNLVYSQREKKNIAAQRIR  SADSLVTADSPPPSMSSV
+Sbjct  28   ALLQASLVRFPGGNYPAAQHWQNLVYSQREKKNIAAQRIRGSSADSLVTADSPPPSMSSV  87
+
+Query  61   MKNNPLYSDLSLEEAMEER  79
+            MKNNPLY DLSLEEAMEER
+Sbjct  88   MKNNPLYGDLSLEEAMEER  106
+
+
+
+
+>major intrinsically disordered NOTCH2-binding receptor 1-like [Pan paniscus]
+Sequence ID: XP_003829382.1 Length: 190
+Range 1: 28 to 106
+
+Score:147 bits(370), Expect:2e-42, 
+Method:Compositional matrix adjust., 
+Identities:72/79(91%), Positives:73/79(92%), Gaps:0/79(0%)
+
+Query  1    SLSQASLVRFPGGNYPAA*HWQNLVYSQREKKNIAAQRIRFFSADSLVTADSPPPSMSSV  60
+            +L QASLVRFPGGNYPAA HWQNLVYSQREKKNIA QRIR  SADSLVTADSPPPSMSSV
+Sbjct  28   ALLQASLVRFPGGNYPAAQHWQNLVYSQREKKNIATQRIRGSSADSLVTADSPPPSMSSV  87
+
+Query  61   MKNNPLYSDLSLEEAMEER  79
+            MKNNPLY DLSLEEAMEER
+Sbjct  88   MKNNPLYGDLSLEEAMEER  106
+
+
+
+
+>major intrinsically disordered NOTCH2-binding receptor 1-like [Pan troglodytes]
+Sequence ID: XP_003950663.1 Length: 190
+>KIAA1024L isoform 1 [Pan troglodytes]
+Sequence ID: PNI50125.1 Length: 190 
+Range 1: 28 to 106
+
+Score:147 bits(370), Expect:2e-42, 
+Method:Compositional matrix adjust., 
+Identities:72/79(91%), Positives:73/79(92%), Gaps:0/79(0%)
+
+Query  1    SLSQASLVRFPGGNYPAA*HWQNLVYSQREKKNIAAQRIRFFSADSLVTADSPPPSMSSV  60
+            +L QASLVRFPGGNYPAA HWQNLVYSQREKKNIA QRIR  SADSLVTADSPPPSMSSV
+Sbjct  28   ALLQASLVRFPGGNYPAAQHWQNLVYSQREKKNIATQRIRRSSADSLVTADSPPPSMSSV  87
+
+Query  61   MKNNPLYSDLSLEEAMEER  79
+            MKNNPLY DLSLEEAMEER
+Sbjct  88   MKNNPLYGDLSLEEAMEER  106
+
+
+
+
+>major intrinsically disordered NOTCH2-binding receptor 1-like [Pongo abelii]
+Sequence ID: XP_002815898.1 Length: 190
+>major intrinsically disordered NOTCH2-binding receptor 1-like [Pongo pygmaeus]
+Sequence ID: XP_054344399.1 Length: 190
+>KIAA1024L isoform 1 [Pongo abelii]
+Sequence ID: PNJ80238.1 Length: 190 
+Range 1: 28 to 106
+
+Score:146 bits(369), Expect:3e-42, 
+Method:Compositional matrix adjust., 
+Identities:72/79(91%), Positives:73/79(92%), Gaps:0/79(0%)
+
+Query  1    SLSQASLVRFPGGNYPAA*HWQNLVYSQREKKNIAAQRIRFFSADSLVTADSPPPSMSSV  60
+            +L QASL RFPGGNYPAA HWQNLVYSQREKKNIAAQRIR  SADSLVTADSPPPSMSSV
+Sbjct  28   ALLQASLARFPGGNYPAAQHWQNLVYSQREKKNIAAQRIRGSSADSLVTADSPPPSMSSV  87
+
+Query  61   MKNNPLYSDLSLEEAMEER  79
+            MKNNPLY DLSLEEAMEER
+Sbjct  88   MKNNPLYGDLSLEEAMEER  106
+
+
+
+
+>major intrinsically disordered NOTCH2-binding receptor 1-like [Rhinopithecus roxellana]
+Sequence ID: XP_010379869.2 Length: 190
+Range 1: 28 to 106
+
+Score:145 bits(367), Expect:5e-42, 
+Method:Compositional matrix adjust., 
+Identities:72/79(91%), Positives:74/79(93%), Gaps:0/79(0%)
+
+Query  1    SLSQASLVRFPGGNYPAA*HWQNLVYSQREKKNIAAQRIRFFSADSLVTADSPPPSMSSV  60
+            +L QASLVRFPGGNYPAA HWQNLVYSQREKKNIAAQRIR  SA+SLVTADSPPPSMSSV
+Sbjct  28   ALLQASLVRFPGGNYPAAQHWQNLVYSQREKKNIAAQRIRGSSAESLVTADSPPPSMSSV  87
+
+Query  61   MKNNPLYSDLSLEEAMEER  79
+            MKNNPLY DLSLEEAMEER
+Sbjct  88   MKNNPLYGDLSLEEAMEER  106
+
+
+
+
+>major intrinsically disordered NOTCH2-binding receptor 1-like [Gorilla gorilla gorilla]
+Sequence ID: XP_004042492.1 Length: 190
+Range 1: 28 to 106
+
+Score:145 bits(366), Expect:9e-42, 
+Method:Compositional matrix adjust., 
+Identities:71/79(90%), Positives:73/79(92%), Gaps:0/79(0%)
+
+Query  1    SLSQASLVRFPGGNYPAA*HWQNLVYSQREKKNIAAQRIRFFSADSLVTADSPPPSMSSV  60
+            +L QASL RFPGGNYPAA HWQNLVYSQ+EKKNIAAQRIR  SADSLVTADSPPPSMSSV
+Sbjct  28   ALLQASLARFPGGNYPAAQHWQNLVYSQKEKKNIAAQRIRGSSADSLVTADSPPPSMSSV  87
+
+Query  61   MKNNPLYSDLSLEEAMEER  79
+            MKNNPLY DLSLEEAMEER
+Sbjct  88   MKNNPLYGDLSLEEAMEER  106
+
+
+
+
+>major intrinsically disordered NOTCH2-binding receptor 1-like [Nomascus leucogenys]
+Sequence ID: XP_004087485.1 Length: 190
+Range 1: 31 to 106
+
+Score:145 bits(365), Expect:1e-41, 
+Method:Compositional matrix adjust., 
+Identities:71/76(93%), Positives:71/76(93%), Gaps:0/76(0%)
+
+Query  4    QASLVRFPGGNYPAA*HWQNLVYSQREKKNIAAQRIRFFSADSLVTADSPPPSMSSVMKN  63
+            QASL RFPGGNYPAA HWQNLVYSQREKKNIAAQRIR  SADSLVTADSPPPSMSSVMKN
+Sbjct  31   QASLARFPGGNYPAAQHWQNLVYSQREKKNIAAQRIRGSSADSLVTADSPPPSMSSVMKN  90
+
+Query  64   NPLYSDLSLEEAMEER  79
+            NPLY DLSLEEAMEER
+Sbjct  91   NPLYGDLSLEEAMEER  106
+
+
+
+
+>major intrinsically disordered NOTCH2-binding receptor 1-like [Piliocolobus tephrosceles]
+Sequence ID: XP_023050104.1 Length: 190
+Range 1: 28 to 106
+
+Score:144 bits(364), Expect:2e-41, 
+Method:Compositional matrix adjust., 
+Identities:71/79(90%), Positives:73/79(92%), Gaps:0/79(0%)
+
+Query  1    SLSQASLVRFPGGNYPAA*HWQNLVYSQREKKNIAAQRIRFFSADSLVTADSPPPSMSSV  60
+            +L QASL RFPGGNYPAA HWQNLVYSQREKKNIAAQRIR  SA+SLVTADSPPPSMSSV
+Sbjct  28   ALLQASLARFPGGNYPAAQHWQNLVYSQREKKNIAAQRIRGSSAESLVTADSPPPSMSSV  87
+
+Query  61   MKNNPLYSDLSLEEAMEER  79
+            MKNNPLY DLSLEEAMEER
+Sbjct  88   MKNNPLYGDLSLEEAMEER  106
+
+
+
+
+>major intrinsically disordered NOTCH2-binding receptor 1-like [Trachypithecus francoisi]
+Sequence ID: XP_033037245.1 Length: 190
+Range 1: 28 to 106
+
+Score:144 bits(363), Expect:2e-41, 
+Method:Compositional matrix adjust., 
+Identities:71/79(90%), Positives:73/79(92%), Gaps:0/79(0%)
+
+Query  1    SLSQASLVRFPGGNYPAA*HWQNLVYSQREKKNIAAQRIRFFSADSLVTADSPPPSMSSV  60
+            +L QASL RFPGGNYPAA HWQNLVYSQREKKNIAAQRIR  SA+SLVTADSPPPSMSSV
+Sbjct  28   ALLQASLARFPGGNYPAAQHWQNLVYSQREKKNIAAQRIRGSSAESLVTADSPPPSMSSV  87
+
+Query  61   MKNNPLYSDLSLEEAMEER  79
+            MKNNPLY DLSLEEAMEER
+Sbjct  88   MKNNPLYGDLSLEEAMEER  106
+
+
+
+
+>UPF0258 protein KIAA1024-like homolog isoform X2 [Macaca nemestrina]
+Sequence ID: XP_024644098.1 Length: 162
+Range 1: 28 to 106
+
+Score:142 bits(358), Expect:6e-41, 
+Method:Compositional matrix adjust., 
+Identities:69/79(87%), Positives:72/79(91%), Gaps:0/79(0%)
+
+Query  1    SLSQASLVRFPGGNYPAA*HWQNLVYSQREKKNIAAQRIRFFSADSLVTADSPPPSMSSV  60
+            +L QAS+ RFPGGNYPAA HWQNLVYSQREKKNIA QRIR  SA+SLVTADSPPPSMSSV
+Sbjct  28   ALLQASMARFPGGNYPAAQHWQNLVYSQREKKNIAGQRIRGSSAESLVTADSPPPSMSSV  87
+
+Query  61   MKNNPLYSDLSLEEAMEER  79
+            MKNNPLY DLSLEEAMEER
+Sbjct  88   MKNNPLYGDLSLEEAMEER  106
+
+
+
+
+>UPF0258 protein KIAA1024-like homolog [Theropithecus gelada]
+Sequence ID: XP_025245224.1 Length: 190
+Range 1: 28 to 106
+
+Score:142 bits(359), Expect:9e-41, 
+Method:Compositional matrix adjust., 
+Identities:70/79(89%), Positives:72/79(91%), Gaps:0/79(0%)
+
+Query  1    SLSQASLVRFPGGNYPAA*HWQNLVYSQREKKNIAAQRIRFFSADSLVTADSPPPSMSSV  60
+            +L Q SL RFPGGNYPAA HWQNLVYSQREKKNIAAQRIR  SA+SLVTADSPPPSMSSV
+Sbjct  28   ALLQTSLARFPGGNYPAAQHWQNLVYSQREKKNIAAQRIRGSSAESLVTADSPPPSMSSV  87
+
+Query  61   MKNNPLYSDLSLEEAMEER  79
+            MKNNPLY DLSLEEAMEER
+Sbjct  88   MKNNPLYGDLSLEEAMEER  106
+
+
+
+
+>major intrinsically disordered NOTCH2-binding receptor 1-like [Chlorocebus sabaeus]
+Sequence ID: XP_008012506.2 Length: 190
+Range 1: 28 to 106
+
+Score:142 bits(358), Expect:1e-40, 
+Method:Compositional matrix adjust., 
+Identities:70/79(89%), Positives:73/79(92%), Gaps:0/79(0%)
+
+Query  1    SLSQASLVRFPGGNYPAA*HWQNLVYSQREKKNIAAQRIRFFSADSLVTADSPPPSMSSV  60
+            +L QASL RFPGGNYPAA HWQNLVYSQREKKNIAAQRIR  SA+SLVTA+SPPPSMSSV
+Sbjct  28   ALLQASLARFPGGNYPAAQHWQNLVYSQREKKNIAAQRIRGSSAESLVTAESPPPSMSSV  87
+
+Query  61   MKNNPLYSDLSLEEAMEER  79
+            MKNNPLY DLSLEEAMEER
+Sbjct  88   MKNNPLYGDLSLEEAMEER  106
+
+
+
+
+>major intrinsically disordered NOTCH2-binding receptor 1-like [Macaca mulatta]
+Sequence ID: NP_001180990.1 Length: 190
+>major intrinsically disordered NOTCH2-binding receptor 1-like [Macaca fascicularis]
+Sequence ID: XP_005557739.1 Length: 190
+>major intrinsically disordered NOTCH2-binding receptor 1-like [Macaca thibetana thibetana]
+Sequence ID: XP_050649564.1 Length: 190 
+Range 1: 28 to 106
+
+Score:142 bits(358), Expect:1e-40, 
+Method:Compositional matrix adjust., 
+Identities:69/79(87%), Positives:72/79(91%), Gaps:0/79(0%)
+
+Query  1    SLSQASLVRFPGGNYPAA*HWQNLVYSQREKKNIAAQRIRFFSADSLVTADSPPPSMSSV  60
+            +L QAS+ RFPGGNYPAA HWQNLVYSQREKKNIA QRIR  SA+SLVTADSPPPSMSSV
+Sbjct  28   ALLQASMARFPGGNYPAAQHWQNLVYSQREKKNIAGQRIRGSSAESLVTADSPPPSMSSV  87
+
+Query  61   MKNNPLYSDLSLEEAMEER  79
+            MKNNPLY DLSLEEAMEER
+Sbjct  88   MKNNPLYGDLSLEEAMEER  106
+
+
+
+
+>major intrinsically disordered NOTCH2-binding receptor 1-like [Symphalangus syndactylus]
+Sequence ID: XP_055155262.1 Length: 190
+Range 1: 31 to 106
+
+Score:142 bits(358), Expect:1e-40, 
+Method:Compositional matrix adjust., 
+Identities:70/76(92%), Positives:70/76(92%), Gaps:0/76(0%)
+
+Query  4    QASLVRFPGGNYPAA*HWQNLVYSQREKKNIAAQRIRFFSADSLVTADSPPPSMSSVMKN  63
+            QASL RFPGGNYPAA HWQNLVYSQREKKNIAAQRIR  SADSLVTADSPPPSMSSVMKN
+Sbjct  31   QASLARFPGGNYPAAQHWQNLVYSQREKKNIAAQRIRGSSADSLVTADSPPPSMSSVMKN  90
+
+Query  64   NPLYSDLSLEEAMEER  79
+            NPLY DLSLEEAME R
+Sbjct  91   NPLYGDLSLEEAMEGR  106
+
+
+
+
+>UPF0258 protein KIAA1024-like homolog isoform X1 [Macaca nemestrina]
+Sequence ID: XP_011715000.1 Length: 190
+Range 1: 28 to 106
+
+Score:142 bits(358), Expect:1e-40, 
+Method:Compositional matrix adjust., 
+Identities:69/79(87%), Positives:72/79(91%), Gaps:0/79(0%)
+
+Query  1    SLSQASLVRFPGGNYPAA*HWQNLVYSQREKKNIAAQRIRFFSADSLVTADSPPPSMSSV  60
+            +L QAS+ RFPGGNYPAA HWQNLVYSQREKKNIA QRIR  SA+SLVTADSPPPSMSSV
+Sbjct  28   ALLQASMARFPGGNYPAAQHWQNLVYSQREKKNIAGQRIRGSSAESLVTADSPPPSMSSV  87
+
+Query  61   MKNNPLYSDLSLEEAMEER  79
+            MKNNPLY DLSLEEAMEER
+Sbjct  88   MKNNPLYGDLSLEEAMEER  106
+
+
+
+
+>major intrinsically disordered NOTCH2-binding receptor 1-like [Hylobates moloch]
+Sequence ID: XP_032012416.1 Length: 190
+Range 1: 31 to 106
+
+Score:142 bits(357), Expect:2e-40, 
+Method:Compositional matrix adjust., 
+Identities:69/76(91%), Positives:71/76(93%), Gaps:0/76(0%)
+
+Query  4    QASLVRFPGGNYPAA*HWQNLVYSQREKKNIAAQRIRFFSADSLVTADSPPPSMSSVMKN  63
+            QASL RFPGGNYPAA HWQNLVYSQREKKNIAA+RIR  SADSL+TADSPPPSMSSVMKN
+Sbjct  31   QASLARFPGGNYPAAQHWQNLVYSQREKKNIAARRIRGSSADSLLTADSPPPSMSSVMKN  90
+
+Query  64   NPLYSDLSLEEAMEER  79
+            NPLY DLSLEEAMEER
+Sbjct  91   NPLYGDLSLEEAMEER  106
+
+
+
+
+>major intrinsically disordered NOTCH2-binding receptor 1-like [Sapajus apella]
+Sequence ID: XP_032117284.1 Length: 190
+Range 1: 28 to 106
+
+Score:139 bits(350), Expect:2e-39, 
+Method:Compositional matrix adjust., 
+Identities:68/79(86%), Positives:71/79(89%), Gaps:0/79(0%)
+
+Query  1    SLSQASLVRFPGGNYPAA*HWQNLVYSQREKKNIAAQRIRFFSADSLVTADSPPPSMSSV  60
+            +L  ASL RFPGGNYPAA HWQNLVYSQREK NIAAQRIR  SA+SLVTADSPPPSMSS+
+Sbjct  28   ALLHASLARFPGGNYPAAQHWQNLVYSQREKNNIAAQRIRGPSAESLVTADSPPPSMSSI  87
+
+Query  61   MKNNPLYSDLSLEEAMEER  79
+            MKNNPLY DLSLEEAMEER
+Sbjct  88   MKNNPLYGDLSLEEAMEER  106
+
+
+
+
+>major intrinsically disordered NOTCH2-binding receptor 1-like [Callithrix jacchus]
+Sequence ID: XP_002744678.1 Length: 190
+Range 1: 28 to 106
+
+Score:137 bits(346), Expect:9e-39, 
+Method:Compositional matrix adjust., 
+Identities:67/79(85%), Positives:71/79(89%), Gaps:0/79(0%)
+
+Query  1    SLSQASLVRFPGGNYPAA*HWQNLVYSQREKKNIAAQRIRFFSADSLVTADSPPPSMSSV  60
+            +L QASL R+P GNYPAA HWQNLVYSQREK NIAAQRIR  SA+SLVTADSPPPSMSS+
+Sbjct  28   ALLQASLARYPCGNYPAAQHWQNLVYSQREKNNIAAQRIRGSSAESLVTADSPPPSMSSI  87
+
+Query  61   MKNNPLYSDLSLEEAMEER  79
+            MKNNPLY DLSLEEAMEER
+Sbjct  88   MKNNPLYGDLSLEEAMEER  106
+
+
+
+
+>major intrinsically disordered NOTCH2-binding receptor 1-like [Cebus imitator]
+Sequence ID: XP_017387650.1 Length: 190
+Range 1: 28 to 106
+
+Score:133 bits(335), Expect:4e-37, 
+Method:Compositional matrix adjust., 
+Identities:66/79(84%), Positives:68/79(86%), Gaps:0/79(0%)
+
+Query  1    SLSQASLVRFPGGNYPAA*HWQNLVYSQREKKNIAAQRIRFFSADSLVTADSPPPSMSSV  60
+            +L  ASL RFPGGNYPAA HWQNLVYSQREK NIAAQRIR  +A SLVTADSPPPSMSS 
+Sbjct  28   ALLHASLARFPGGNYPAAQHWQNLVYSQREKNNIAAQRIRGSNAASLVTADSPPPSMSST  87
+
+Query  61   MKNNPLYSDLSLEEAMEER  79
+            MKNNPL  DLSLEEAMEER
+Sbjct  88   MKNNPLCGDLSLEEAMEER  106
+
+
+
+
+		
+
+
