@@ -1,0 +1,221 @@
+---
+title: "class14"
+author: "Jaewon Kim"
+format: pdf
+---
+
+```{r}
+#|eval: FALSE
+library(DESeq2)
+```
+
+```{r}
+metafile <- "GSE37704_metadata.csv"
+countfile <- "GSE37704_featurecounts.csv"
+
+colData = read.csv(metafile, row.names=1)
+countData = read.csv(countfile, row.names=1)
+head(colData)
+head(countData)
+```
+
+
+Q. Complete the code below to remove the troublesome first column from countData
+```{r}
+countData <- as.matrix(countData[, -1])
+head(countData)
+```
+
+
+Q. Complete the code below to filter countData to exclude genes (i.e. rows) where we have 0 read count across all samples (i.e. columns).
+```{r}
+zero.ind <- rowSums((countData[ ,1:length(countData[1,]) ] == 0)) > 0
+countData <- countData[!zero.ind, ]
+head(countData)
+```
+
+```{r}
+dds = DESeqDataSetFromMatrix(countData= countData,
+                             colData= colData,
+                             design= ~condition)
+dds = DESeq(dds)
+```
+
+```{r}
+dds
+```
+
+```{r}
+res = results(dds, contrast=c("condition", "hoxa1_kd", "control_sirna"))
+```
+
+Q. Call the summary() function on your results to get a sense of how many genes are up or down-regulated at the default 0.1 p-value cutoff.
+```{r}
+summary(res)
+```
+
+
+```{r}
+plot( res$log2FoldChange, -log(res$padj) )
+```
+
+
+Q. Improve this plot by completing the below code, which adds color and axis labels
+```{r}
+# Make a color vector for all genes
+mycols <- rep("gray", nrow(res) )
+
+# Color red the genes with absolute fold change above 2
+standard <- abs(res$log2FoldChange) > 2
+mycols[standard] <- "red"
+
+# Color blue those with adjusted p-value less than 0.01
+#  and absolute fold change more than 2
+inds <- (res$padj < 0.01) & (standard)
+mycols[inds] <- "blue"
+plot( res$log2FoldChange, -log(res$padj), col= mycols, xlab="Log2(FoldChange)", ylab="-Log(P-value)" )
+```
+
+
+Q. Use the mapIDs() function multiple times to add SYMBOL, ENTREZID and GENENAME annotation to our results by completing the code below.
+```{r}
+library("AnnotationDbi")
+library("org.Hs.eg.db")
+
+columns(org.Hs.eg.db)
+
+res$symbol = mapIds(org.Hs.eg.db,
+                    keys= row.names(res),
+                    keytype="ENSEMBL",
+                    column= "SYMBOL",
+                    multiVals="first")
+
+res$entrez = mapIds(org.Hs.eg.db,
+                    keys= row.names(res),
+                    keytype="ENSEMBL",
+                    column= "ENTREZID",
+                    multiVals="first")
+
+res$genename = mapIds(org.Hs.eg.db,
+                      keys= row.names(res),
+                      keytype= "ENSEMBL",
+                      column= "GENENAME",
+                      multiVals="first")
+
+head(res, 10)
+```
+
+```{r}
+which(is.na(res$symbol) == TRUE)
+```
+
+
+
+Q. Finally for this section let's reorder these results by adjusted p-value and save them to a CSV file in your current project directory.
+```{r}
+ord <- order(res$padj)
+
+#View(res[ord,])
+head(res[ord,])
+write.csv(res[ord,], "deseq_results.csv")
+```
+
+```{r}
+# BiocManager::install(c("pathview", "gage", "gageData"))
+
+library(pathview)
+library(gage)
+library(gageData)
+
+data(kegg.sets.hs)
+data(sigmet.idx.hs)
+
+head(kegg.sets.hs, 3)
+```
+
+```{r}
+foldchanges = res$log2FoldChange
+names(foldchanges) = res$entrez
+head(foldchanges)
+```
+
+```{r}
+keggres = gage(foldchanges, gsets=kegg.sets.hs)
+```
+
+```{r}
+attributes(keggres)
+```
+
+```{r}
+head(keggres$less)
+```
+
+```{r}
+pathview(gene.data=foldchanges, pathway.id="hsa04110")
+```
+![](hsa04110.pathview.png)
+```{r}
+pathview(gene.data=foldchanges, pathway.id="hsa04110", kegg.native=FALSE)
+```
+![](hsa04110.png)
+
+```{r}
+## Focus on top 5 upregulated pathways here for demo purposes only
+keggrespathways <- rownames(keggres$greater)[1:5]
+
+# Extract the 8 character long IDs part of each string
+keggresids = substr(keggrespathways, start=1, stop=8)
+keggresids
+```
+
+```{r}
+pathview(gene.data=foldchanges, pathway.id=keggresids, species="hsa")
+```
+![](hsa04142.pathview.png)
+![](hsa05323.pathview.png)
+![](hsa04060.pathview.png)
+![](hsa04640.pathview.png)
+![](hsa05332.pathview.png)
+
+
+Q. Can you do the same procedure as above to plot the pathview figures for the top 5 down-reguled pathways?
+```{r}
+questionpathways <- rownames(keggres$less)[1:5]
+
+questioninput = substr(questionpathways, start=1, stop=8)
+questioninput
+pathview(gene.data= foldchanges, pathway.id= questioninput, species="hsa")
+```
+![](hsa04110.pathview.png)
+![](hsa03030.pathview.png)
+![](hsa04114.pathview.png)
+![](hsa05130.pathview.png)
+![](hsa03440.pathview.png)
+
+
+```{r}
+data(go.sets.hs)
+data(go.subs.hs)
+
+# Focus on Biological Process subset of GO
+gobpsets = go.sets.hs[go.subs.hs$BP]
+
+gobpres = gage(foldchanges, gsets=gobpsets, same.dir=TRUE)
+
+lapply(gobpres, head)
+```
+
+```{r}
+sig_genes <- res[res$padj <= 0.05 & !is.na(res$padj), "symbol"]
+print(paste("Total number of significant genes:", length(sig_genes)))
+```
+
+```{r}
+write.table(sig_genes, file="significant_genes.txt", row.names=FALSE, col.names=FALSE, quote=FALSE)
+```
+
+
+Q: What pathway has the most significant “Entities p-value”? Do the most significant pathways listed match your previous KEGG results? What factors could cause differences between the two methods?
+
+On KEGG, cell cycle had lowest p-value, where GO result had 'biological process' (p-value 8.25e-74) of stimulus detection pathway as lowest. The difference between KEGG and GO is that KEGG computes gene length and abudance bias through tricubemovingaverage() where as GO uses monotonic regression. 
