@@ -1,0 +1,195 @@
+---
+title: "class17"
+author: "Jaewon Kim"
+format: pdf
+---
+
+#SRA 
+- First, create directory for today's work (In terminal), 
+$cd ~/Downloads/bimm143/R code/class17
+$mkdir class17
+
+- Next, move .pem file into work directory and log into remote laptop
+$ cp ~Desktop/class16/bimm143_louis.pem .
+$ chmod 400 "bimm143_louis.pem"
+$ ssh -i "bimm143_louis.pem" ubuntu@ec2-44-234-145-108.us-west-2.compute.amazonaws.com
+
+- Get SRA toolkit
+$ curl -O https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/current/sratoolkit.current-ubuntu64.tar.gz
+$ tar -zxvf sratoolkit.current-ubuntu64.tar.gz
+(Or use unzip to remove .gz first and then use tar)
+
+- Now, move to SRA toolkit folder
+$ ls
+$ cd sratoolkit.3.0.10-ubuntu64
+$ pwd
+
+- Export path as variable to shortcut full path. Check if pathway is registered well
+$ export PATH=$PATH:/home/ubuntu/sratoolkit.3.0.10-ubuntu64/bin
+$ prefetch --version
+
+#Working with RNA-Seq data
+- Download data of record in interest
+$ prefetch SRR600956
+
+-Run fastq 
+$ fastq-dump SRR600956
+
+- Print first few lines and select lines of SRR600956 result
+$ head SRR600956.fastq
+$ grep -c "@SRR600956" SRR600956.fastq
+
+- Download another fastq file we'll work with
+$ prefetch SRR2156848
+
+- Run data extract, but per mate-pairs
+$ fastq-dump --split-3 SRR2156848
+
+- Print first few lines and check number of sequences in the file
+```{r}
+#Q. How would you check that these files with extension ‘.fastq’ actually look like what we expect for a FASTQ file? You could try printing the first few lines to the shell standard output:
+```
+$ head -3 SRR2156848_1.fastq
+
+```{r}
+#Q. How could you check the number of sequences in each file?
+```
+$ grep -c "@SRR2156848" *fastq
+
+- Now download file to analyze and run fastq-dump. Then, check how many sequences are there in each files
+$ prefetch SRR2156849 SRR2156850 SRR2156851
+$ fastq-dump --split-3 SRR2156849 SRR2156850 SRR2156851
+$ grep -c "@SRR21568" *fastq
+
+#Pseudoalignment
+- Download Kallisto
+$ wget https://github.com/pachterlab/kallisto/releases/download/v0.44.0/kallisto_linux-v0.44.0.tar.gz
+$ gunzip kallisto_linux-v0.44.0.tar.gz
+$ tar -xvf kallisto kallisto_linux-v0.44.0.tar
+
+- Export pathway
+$ cd kallisto_linux-v0.44.0/
+$ pwd
+$ export PATH=$PATH:/home/ubuntu/sratoolkit.3.0.10-ubuntu64/bin/kallisto_linux-v0.44.0
+
+```{r}
+#Q. Can you run kallisto to print out it’s citation information?
+```
+$ kalisto cite
+
+- Get human transcriptome
+$ wget ftp://ftp.ensembl.org/pub/release-67/fasta/homo_sapiens/cdna/Homo_sapiens.GRCh37.67.cdna.all.fa.gz
+$ gunzip Homo_sapiens.GRCh37.67.cdna.all.fa.gz
+$ grep -c ">" Homo_sapiens.GRCh37.67.cdna.all.fa.gz (How many genes in the .fa?)
+
+- Build transcript index
+$ kallisto index -i hg19.ensembl Homo_sapiens.GRCh37.67.cdna.all.fa
+
+#Quantifying transcripts
+- Create file and run transcript qualification
+$ nano run.me.sh
+kallisto quant -i hg19.ensembl -o SRR2156848_quant SRR2156848_1.fastq SRR2156848_2.fastq
+kallisto quant -i hg19.ensembl -o SRR2156849_quant SRR2156849_1.fastq SRR2156849_2.fastq
+kallisto quant -i hg19.ensembl -o SRR2156850_quant SRR2156850_1.fastq SRR2156850_2.fastq
+kallisto quant -i hg19.ensembl -o SRR2156851_quant SRR2156851_1.fastq SRR2156851_2.fastq
+
+```{r}
+#Q. Have a look at the TSV format versions of these files to understand their structure. What do you notice about these files contents?
+```
+They're text files with read counts. Gene names follows Ensembl format.
+
+- Transfer results to local folder (Move to local terminal for this)
+$ scp -r -i "bimm143_louis.pem" ubuntu@ec2-44-234-145-108.us-west-2.compute.amazonaws.com:~/SRR*_quant .
+
+#Downstream analysis
+- Install tximport()
+BiocManager::install("tximport")
+
+- Setup folder and files to read
+```{r}
+library(tximport)
+
+folders <- dir(pattern = "SRR21568*")
+samples <- sub("_quant", "", folders)
+files <- file.path(folders, "abundance.h5")
+names(files) <- samples
+
+txi.kallisto <- tximport(files, type = "kallisto", txOut = TRUE)
+head(txi.kallisto$counts)
+```
+
+- Check how many transcripts are in each samples. How many transcripts are detected in at least one sample?
+```{r}
+colSums(txi.kallisto$counts)
+
+sum(rowSums(txi.kallisto$counts)>0)
+```
+
+- Exclude zero reads from the data
+```{r}
+nonzero <- rowSums(txi.kallisto$counts) > 0
+set.nonzero <- txi.kallisto$counts[nonzero, ]
+head(set.nonzero)
+```
+
+- Filter out genes where transcript level stays constant
+```{r}
+nonconstant <- apply(set.nonzero, 1, sd) > 0 #Find rows with sd >0 
+set.nonconstant <- set.nonzero[nonconstant, ] #seperate out those rows 
+head(set.nonconstant)
+```
+
+#PCA
+```{r}
+pca <- prcomp(t(set.nonconstant), scale = TRUE)
+summary(pca)
+
+plot(pca$x[,1], pca$x[,2],
+     col=c("blue","blue","red","red"),
+     xlab = "PC1", ylab = "PC2", pch = 16)
+```
+
+Q. Use ggplot to make a similar figure of PC1 vs PC2 and a seperate figure PC1 vs PC3 and PC2 vs PC3.
+```{r}
+library(ggplot2)
+library(ggrepel)
+
+colData <- data.frame(condition = factor(rep(c("control", "treatment"), each = 2)))
+rownames(colData) <- colnames(txi.kallisto$counts)
+
+y <- as.data.frame(pca$x)
+y$Condition <- as.factor(colData$condition)
+
+ggplot(y) +
+  aes(PC1, PC2, col = Condition) +
+  geom_point() +
+  geom_text_repel(label = rownames(y)) 
+
+ggplot(y) +
+  aes(PC1, PC3, col = Condition) +
+  geom_point() +
+  geom_text_repel(label = rownames(y)) 
+
+ggplot(y) +
+  aes(PC2, PC3, col = Condition) +
+  geom_point() +
+  geom_text_repel(label = rownames(y)) 
+```
+
+#Differential expression analysis
+```{r}
+#|message: FALSE
+library(DESeq2)
+
+Table <- data.frame(condition = factor(rep(c("control", "treatment"), each = 2)))
+rownames(Table) <- colnames(txi.kallisto$counts)
+
+dds <- DESeqDataSetFromTximport(txi.kallisto,
+                                Table, 
+                                ~condition)
+
+dds <- DESeq(dds)
+res <- results(dds)
+head(res)
+```
+

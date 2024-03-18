@@ -1,0 +1,1 @@
+ssh -i "bimm143_louis.pem" ubuntu@ec2-44-234-145-108.us-west-2.compute.amazonaws.com
