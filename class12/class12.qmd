@@ -1,0 +1,71 @@
+---
+title: "class12"
+author: "Jaewon Kim"
+format: pdf
+---
+
+Section 1. Proportion of G/G in a population 
+
+We downloaded file from <https://useast.ensembl.org/Homo_sapiens/Variation/Sample?db=core;g=ENSG00000073605;r=17:39904595-39919854;v=rs8067378;vdb=variation;vf=959672880#373531_tablePanel>
+
+Here we read CSV file
+```{r}
+mxl <- read.csv("373531-SampleGenotypes-Homo_sapiens_Variation_Sample_rs8067378.csv")
+head(mxl)
+```
+
+```{r}
+table(mxl$Genotype..forward.strand.) / nrow(mxl)
+```
+
+Now let's look at different population GBR.
+```{r}
+gbr <- read.csv("373522-SampleGenotypes-Homo_sapiens_Variation_Sample_rs8067378.csv")
+head(gbr)
+```
+
+```{r}
+table(gbr$Genotype..forward.strand.) / nrow(gbr)
+```
+This variant that is associated with childhood asthma is more frequent in the GBR population than the MKL population.
+
+\newpage
+Section 4. Let's analyze gene expression
+
+Q.13 Read this file into R and determine the sample size for each genotype and their
+corresponding median expression levels for each of these genotypes.
+```{r}
+expr <- read.table("rs8067378_ENSG00000172057.6.txt")
+
+nrow(expr)
+table(expr$geno)
+```
+```{r}
+calc_mean <- function (input) {
+  for (i in 1:length(input)) {
+    filter <- input[i]
+    x <- expr$geno == filter
+    print(paste(filter, ":", median(expr[x, "exp"])))
+  }
+}
+
+input <- c("A/A", "A/G", "G/G")
+calc_mean(input)
+```
+There are total 462 samples, where 108 were "A/A", 233 were "A/G", and 121 were "G/G". Median expressions were 31.25, 25.06, 20.07, respectively. 
+
+\newpage
+Q14: Generate a boxplot with a box per genotype, what could you infer from the relative
+expression value between A/A and G/G displayed in this plot? Does the SNP effect the
+expression of ORMDL3? 
+```{r}
+library(ggplot2)
+
+ggplot(expr) +
+  aes(x = geno, y = exp, fill = geno) +
+  geom_boxplot(notch = TRUE) +
+  geom_point(alpha = 0.2, position = position_jitter(w = 0.15)) 
+```
+Lower quartile of A/A (wt) is higher than upper quartile of G/G (mt) expression and median of A/A is higher than G/G, meaning that SNP does effect the expression of ORMDL3. Heterogeneous A/G having expression level between A/A and G/G further supports that SNP from A to G supress gene expression.  
+
+
