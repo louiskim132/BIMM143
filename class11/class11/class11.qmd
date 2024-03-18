@@ -1,0 +1,131 @@
+---
+title: "class11"
+author: "Jaewon Kim"
+format: pdf
+---
+
+Alphafold has changed the game for protein structure prediction and allows anyone with sufficent bioinformatics skills to predict the structure of virtually any protein.
+
+![](3.png)
+
+we ran alphafold via googlecolab at:
+https://github.com/sokrypton/ColabFold
+
+In particular we used their AlphaFold2_mmseqs2 version that uses mmseqs2 rather than HMMMer for sequence search.
+
+![](1.png)
+![](2.png)
+
+
+The main outputs include a set of **PDB structure files** along with matching **JSON format files** that tell us how good the resulting models might be.
+
+Let's start my loading these structures up in Mol*
+
+```{r}
+library(bio3d)
+
+# Change this for YOUR results dir name
+results_dir <- "C:/Users/louis/Downloads/bimm143/R code/class11/HIV1prhomodimer_23119.result/HIV1prhomodimer_23119"
+
+# File names for all PDB models
+pdb.files <- list.files(path= results_dir, pattern="*.pdb", full.names = TRUE)
+
+# Print our PDB file names
+basename(pdb.files)
+
+# Read all data from Models 
+#  and superpose/fit coords
+pdbs <- pdbaln(pdb.files, fit=TRUE, exefile="msa")
+```
+
+```{r}
+pdbs
+```
+```{r}
+#install.packages("pheatmap")
+library(pheatmap)
+
+rd <- rmsd(pdbs, fit=T)
+range(rd)
+
+colnames(rd) <- paste0("m",1:5)
+rownames(rd) <- paste0("m",1:5)
+pheatmap(rd)
+
+rd
+```
+
+```{r}
+#Read ref. PDB
+
+pdb <- read.pdb("1hsg")
+
+plotb3(pdbs$b[1,], typ="l", lwd=2, sse=pdb)
+points(pdbs$b[2,], typ="l", col="red")
+points(pdbs$b[3,], typ="l", col="blue")
+points(pdbs$b[4,], typ="l", col="darkgreen")
+points(pdbs$b[5,], typ="l", col="orange")
+abline(v=100, col="gray")
+```
+
+```{r}
+core <- core.find(pdbs)
+core.inds <- print(core, vol=0.5)
+xyz <- pdbfit(pdbs, core.inds, outpath="corefit_structures")
+```
+
+```{r}
+rf <- rmsf(xyz)
+
+plotb3(rf, sse=pdb)
+abline(v=100, col="gray", ylab="RMSF")
+```
+
+If the predicted model has more than one domain, each domain may have high confidence, yet the relative positions of the domains may not. The estimated reliability of relative domain positions is in graphs of predicted aligned error (PAE) which are included in the downloadable zip file and analyzed in R above. 
+
+```{r}
+library(jsonlite)
+
+# Listing of all PAE JSON files
+pae_files <- list.files(path=results_dir, pattern=".*model.*\\.json", full.names = TRUE)
+
+pae1 <- read_json(pae_files[1],simplifyVector = TRUE)
+pae5 <- read_json(pae_files[5],simplifyVector = TRUE)
+
+attributes(pae1)
+
+# Per-residue pLDDT scores 
+#  same as B-factor of PDB..
+head(pae1$plddt)
+
+pae1$max_pae
+pae5$max_pae
+
+plot.dmat(pae1$pae, xlab="Residue Position (i)", ylab="Residue Position (j)")
+plot.dmat(pae5$pae, xlab="Residue Position (i)", ylab="Residue Position (j)", grid.col = "black")
+plot.dmat(pae1$pae, xlab="Residue Position (i)", ylab="Residue Position (j)", zlim = c(0, 30))
+```
+
+```{r}
+aln_file <- list.files(path = results_dir, pattern=".a3m$", full.names = TRUE)
+aln_file
+
+aln <- read.fasta(aln_file[1], to.upper = TRUE)
+
+dim(aln$ali) #number of sequences in alignment
+
+sim <- conserv(aln)
+
+plotb3(sim[1:99], sse=trim.pdb(pdb, chain="A"), ylab="Conservation Score")
+
+con <- consensus(aln, cutoff = 0.9)
+con$seq
+```
+
+```{r}
+m1.pdb <- read.pdb(pdb.files[1])
+occ <- vec2resno(c(sim[1:99], sim[1:99]), m1.pdb$atom$resno)
+write.pdb(m1.pdb, o = occ, file = "m1_conserv.pdb")
+```
+
+
