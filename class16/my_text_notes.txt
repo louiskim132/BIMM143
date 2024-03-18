@@ -1,0 +1,24 @@
+This is just a text editor...
+
+pwd: print working dir
+ls: list files
+cd: change dir
+mkdir: make a new dir
+rm: remove/delete files
+nano: a basic text editor
+
+Instance ID
+i-0006d7612527f83f5
+
+public IP
+35.80.38.95
+
+Open an SSH client.
+
+Locate your private key file. The key used to launch this instance is bimm143_louis.pem
+
+Run this command, if necessary, to ensure your key is not publicly viewable.
+ chmod 400 "bimm143_louis.pem"
+
+Connect to your instance using its Public DNS:
+ ec2-35-80-38-95.us-west-2.compute.amazonaws.com
