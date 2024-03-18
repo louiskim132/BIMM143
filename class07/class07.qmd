@@ -1,0 +1,214 @@
+---
+title: "class07"
+author: "Jaewon Kim"
+format: pdf
+Date: 2/5/24
+---
+
+#First up kmeans()
+
+Demo od using kmeans() function in base R. First make up some data with a known structure
+
+```{r}
+tmp <- c(rnorm(30, -3), rnorm(30, 3))
+x <- cbind(x=tmp, y= rev(tmp))
+x
+plot(x)
+```
+
+Now we have some made up data in 'x' let's see how kmeans works with this data
+
+```{r}
+k <- kmeans(x, centers = 2, nstart = 20)
+k
+```
+
+Q. How many points in each cluster
+
+```{r}
+k$size
+```
+
+Q. How do we get to the cluster membership/assignment
+
+```{r}
+k$cluster
+```
+
+Q. What about cluster centers?
+```{r}
+k$centers
+```
+
+Now we got to the main results. Let's use them to plot our data with the kmeans result
+
+```{r}
+plot(x, col = k$cluster)
+points(k$centers, col="blue", pch = 15)
+```
+
+##Now for hclust()
+
+We will cluster the same data 'x' with the 'hclust()' In this case, 'hclust()' requires a distance matrix as input.
+
+```{r}
+hc <- hclust(dist(x))
+hc
+```
+Let's plot our hclust result
+
+```{r}
+plot(hc)
+```
+
+To get our cluster membership vector, we need to "cut" the tree with the 'cutree()'
+
+```{r}
+groups <- cutree(hc, h = 8)
+groups
+```
+
+Now plot our hclust() results 
+
+```{r}
+plot(x, col = groups)
+```
+
+---------------------
+Q. Import UK_foods.csv
+```{r}
+url <- "https://tinyurl.com/UK-foods"
+x <- read.csv(url, row.names = 1)
+x
+```
+
+Q1. How many rows and columns are in your new data frame named x? What R functions could you use to answer this questions?
+```{r}
+dim(x)
+
+#There are 4 columns and 17 rows.
+```
+
+Q2. Which approach to solving the ‘row-names problem’ mentioned above do you prefer and why? Is one approach more robust than another under certain circumstances?
+```{r}
+#row.names() is preferred. Using index requires variable assignment. However, R can store one input per variable that index approach results decrease readability of the code. However, row.names() can limit table within the line of code that it's much easier to understand.
+```
+
+```{r}
+barplot(as.matrix(x), beside=T, col=rainbow(nrow(x)))
+
+cols <- rainbow(nrow(x))
+barplot(as.matrix(x), col = cols)
+```
+
+
+Q3: Changing what optional argument in the above barplot() function results in the following plot? (stacked one)
+```{r}
+#Remove besides = True (or change true to false) makes all data stacked within same country, creating plot in the question.  
+
+barplot(as.matrix(x), beside=F, col=rainbow(nrow(x)))
+```
+
+
+Q5: Generating all pairwise plots may help somewhat. Can you make sense of the following code and resulting figure? What does it mean if a given point lies on the diagonal for a given plot?
+```{r}
+#Y-axis in each row corresponds to consumption in country in same row. X-axis in each column corresponds to consumption in country in same column. Each data plot represents coordinate based on comsumption in two different countries. Hence, points on diagonal means two countries are consuming same amount of food.
+
+pairs(x, col=rainbow(10), pch=16)
+```
+
+
+Q6. What is the main differences between N. Ireland and the other countries of the UK in terms of this data-set?
+```{r}
+#Blue dot where N.Ireland is on y-axis is higher (low where N.Ireland is on x-axis) than diagonal lines. This means consumption of Fresh poptato in N.Ireland is significantly higher than other counties. 
+```
+
+#PCA to the rescue!!
+The main base R PCA function is called 'prcomp()' and we will need to give it the transpose of our input data!
+
+```{r}
+pca <- prcomp(t(x))
+attributes(pca)
+pca
+```
+To make our new PCA plot (a.k.a PCA scores) we access 'pca$x'
+
+```{r}
+country_cols <- c("orange", "red", "blue", "green")
+plot(pca$x[,1], pca$x[,2])
+text(pca$x[,1], pca$x[,2], colnames(x), col = country_cols)
+```
+
+Q7. Complete the code below to generate a plot of PC1 vs PC2. The second line adds text labels over the data points.
+```{r}
+plot(pca$x[,1], pca$x[,2], xlab="PC1", ylab="PC2", xlim=c(-270,500))
+text(pca$x[,1], pca$x[,2], colnames(x))
+```
+
+
+Q8. Customize your plot so that the colors of the country names match the colors in our UK and Ireland map and table at start of this document.
+```{r}
+country_cols <- c("orange", "red", "blue", "green")
+plot(pca$x[,1], pca$x[,2], xlab="PC1", ylab="PC2", xlim=c(-270,500))
+text(pca$x[,1], pca$x[,2], colnames(x), col = country_cols)
+```
+
+```{r}
+v <- round( pca$sdev^2/sum(pca$sdev^2) * 100 )
+v
+z <- summary(pca)
+z$importance
+barplot(v, xlab="Principal Component", ylab="Percent Variation")
+par(mar=c(10, 3, 0.35, 0))
+barplot( pca$rotation[,1], las=2 )
+```
+
+Q9: Generate a similar ‘loadings plot’ for PC2. What two food groups feature prominantely and what does PC2 maninly tell us about?
+```{r}
+par(mar=c(10, 3, 0.35, 0))
+barplot(pca$rotation[,2], las=2 )
+
+# PC2 indicates axis that captures variance second. 
+# Fresh_potatoes pushes country with high potato consumption down
+# and ones with high soft drink consumption pusehd up on plot.
+# This is shown in PCA plot, where England/N.Ireland has similar 
+# food consumption pattern, thus levels similar on PC2.
+```
+
+```{r}
+url2 <- "https://tinyurl.com/expression-CSV"
+rna.data <- read.csv(url2, row.names=1)
+head(rna.data)
+```
+
+Q10: How many genes and samples are in this data set?
+```{r}
+dim(rna.data)
+
+#There are 100 genes and 10 samples
+```
+
+##Run PCA
+```{r}
+## Again we have to take the transpose of our data 
+pca <- prcomp(t(rna.data), scale=TRUE)
+ 
+## Simple un polished plot of pc1 and pc2
+plot(pca$x[,1], pca$x[,2], xlab="PC1", ylab="PC2")
+```
+
+```{r}
+summary(pca)
+plot(pca, main="Quick scree plot")
+pca$x
+
+#We have 5wt and 5 ko samples, so add color
+mycols <- c(rep("blue", 5), rep("red", 5))
+mycols
+
+plot(pca$x[,1], pca$x[,2], xlab="PC1", ylab="PC2", col = mycols)
+```
+
+I could examine which genes contribute most to this first PC
+```{r}
+head(sort(abs(pca$rotation[,1]), decreasing = T))
